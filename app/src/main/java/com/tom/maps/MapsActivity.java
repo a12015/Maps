@@ -15,7 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationChangeListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -28,7 +28,7 @@ public class MapsActivity extends FragmentActivity {
         if (mMap!=null){
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.setMyLocationEnabled(true);
-            mMap.setOnMyLocationButtonClickListener(
+/*            mMap.setOnMyLocationButtonClickListener(
                     new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
                 public boolean onMyLocationButtonClick() {
@@ -40,7 +40,10 @@ public class MapsActivity extends FragmentActivity {
                     ));
                     return false;
                 }
-            });
+            });*/
+            mMap.setOnMyLocationChangeListener(this);
+
+
             mMap.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                             new LatLng(25.025797, 121.537819), 18)
@@ -90,5 +93,12 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+
+    @Override
+    public void onMyLocationChange(Location location) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(location.getLatitude(), location.getLongitude()), 18)
+        );
     }
 }
