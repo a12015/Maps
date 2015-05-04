@@ -1,6 +1,7 @@
 package com.tom.maps;
 
 import android.content.Context;
+import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.support.v4.app.FragmentActivity;
@@ -32,11 +33,11 @@ public class MapsActivity extends FragmentActivity {
                 @Override
                 public boolean onMyLocationButtonClick() {
                     LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-//                    LocationProvider provider = manager.getProvider("gps");
-
-                    manager.getLastKnownLocation("gps");
-
+                    //LocationProvider provider = manager.getProvider("gps");
+                    Location loc = manager.getLastKnownLocation("gps");
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(
+                            new LatLng(loc.getLatitude(), loc.getLongitude())
+                    ));
                     return false;
                 }
             });
