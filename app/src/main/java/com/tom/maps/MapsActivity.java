@@ -1,9 +1,13 @@
 package com.tom.maps;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -15,9 +19,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationChangeListener {
+public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationChangeListener, GoogleMap.OnMarkerClickListener {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     LatLng sevenEleven = new LatLng(25.02567019, 121.5387252);
 
@@ -55,11 +60,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     .position(new LatLng(25.025797, 121.537819)
                     )
             );
+            //台北市大安區和平東路二段63號, 02 2702 7770
             mMap.addMarker(new MarkerOptions()
                     .position(sevenEleven)
                     .title("7-11")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.seven11))
+                    .snippet("02 2702 7770")
             );
+            mMap.setOnMarkerClickListener(this);
 
         }
     }
@@ -113,5 +121,24 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(), location.getLongitude()), 18)
         );
+    }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        new AlertDialog.Builder(this)
+                .setTitle(marker.getTitle())
+                .setMessage(marker.getSnippet())
+                .setPositiveButton("OK", null)
+                .setNeutralButton("Dial", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent dial = new Intent(Intent.ACTION_CALL);
+                        Uri number = Uri.parse("tel:"+marker.getSnippet());
+                        dial.setData(number);
+                        startActivity(dial);
+                    }
+                })
+                .show();
+        return false;
     }
 }
