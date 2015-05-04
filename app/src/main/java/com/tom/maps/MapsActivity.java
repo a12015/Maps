@@ -41,13 +41,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     return false;
                 }
             });*/
-            mMap.setOnMyLocationChangeListener(this);
+//            mMap.setOnMyLocationChangeListener(this);
 
 
             mMap.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                             new LatLng(25.025797, 121.537819), 18)
                     , 2000, null);
+            mMap.addMarker(new MarkerOptions()
+                    .title("SCE")
+                    .position(new LatLng(25.025797, 121.537819)
+                    )
+            );
+
+
         }
     }
 
