@@ -12,12 +12,14 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationChangeListener {
-
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    LatLng sevenEleven = new LatLng(25.02567019, 121.5387252);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     .position(new LatLng(25.025797, 121.537819)
                     )
             );
-
+            mMap.addMarker(new MarkerOptions()
+                    .position(sevenEleven)
+                    .title("7-11")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.seven11))
+            );
 
         }
     }
