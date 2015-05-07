@@ -125,10 +125,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     double lat = location.getDouble("lat");
                     double lng = location.getDouble("lng");
                     String name = result.getString("name");
-//                    String vicinity = result.getString("vicinity");
+                    String vicinity = result.getString("vicinity");
                     Log.d("RES", name+"/"+lat+"/"+lng+"/");
+                    mMap.addMarker(
+                            new MarkerOptions()
+                                    .position(new LatLng(lat,lng))
+                                    .title(name)
+                                    .snippet(vicinity)
+                    );
                 }
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
