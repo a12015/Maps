@@ -24,6 +24,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -80,7 +84,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             mMap.setOnMarkerClickListener(this);
             //
             // https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBeWCko5S0exlhlmyzHM5mdpzpf6kHoAx4&location=25.025197,121.537819&radius=500
-            new PlacesTask().execute("https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBeWCko5S0exlhlmyzHM5mdpzpf6kHoAx4&location=25.025197,121.537819&radius=500");
+            new PlacesTask().execute("https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBeWCko5S0exlhlmyzHM5mdpzpf6kHoAx4&location=25.025197,121.537819&radius=500&types=food");
 
         }
     }
@@ -110,7 +114,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         @Override
         protected void onPostExecute(String s) {
             Log.d("JSON", s);
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(s);
+                JSONArray results = obj.getJSONArray("results");
+                for (int i=0; i<results.length();i++){
+                    JSONObject result = results.getJSONObject(i);
+                    JSONObject geometry = result.getJSONObject("geometry");
+                    JSONObject location = geometry.getJSONObject("location");
+                    double lat = location.getDouble("lat");
+                    double lng = location.getDouble("lng");
+                    String name = result.getString("name");
+//                    String vicinity = result.getString("vicinity");
+                    Log.d("RES", name+"/"+lat+"/"+lng+"/");
+                }
 
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
 
         }
