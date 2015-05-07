@@ -8,8 +8,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -21,6 +23,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.Buffer;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationChangeListener, GoogleMap.OnMarkerClickListener {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -68,6 +78,40 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     .snippet("02 2702 7770")
             );
             mMap.setOnMarkerClickListener(this);
+            //
+            // https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBeWCko5S0exlhlmyzHM5mdpzpf6kHoAx4&location=25.025197,121.537819&radius=500
+            new PlacesTask().execute("https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyBeWCko5S0exlhlmyzHM5mdpzpf6kHoAx4&location=25.025197,121.537819&radius=500");
+
+        }
+    }
+
+    class PlacesTask extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            StringBuffer sb = new StringBuffer();
+            try {
+                URL url = new URL(params[0]);
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String line = in.readLine();
+                while(line!=null){
+                    sb.append(line);
+                    line = in.readLine();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return sb.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Log.d("JSON", s);
+
+
 
         }
     }
